@@ -1,50 +1,65 @@
-// Replace if using a different env file or config
-require("dotenv").config({ path: "./.env" });
-const express = require("express");
-const app = express();
-const { resolve } = require("path");
-const bodyParser = require("body-parser");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+// 1. setup dotenv, and set up env file
+require('dotenv').config();
+// 2. setup Stripe
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-app.use(express.static(process.env.STATIC_DIR));
-// Use JSON parser for all non-webhook routes
-app.use((req, res, next) => {
-  if (req.originalUrl === "/webhook") {
-    next();
-  } else {
-    bodyParser.json()(req, res, next);
+const express = require('express')
+const app = express()
+// 3. setup middleware to handle incoming request objects as JSON https://stackoverflow.com/a/51844327
+// don't need since we are not passing in json request for POST calls
+// app.use(express.json())
+const port = 4242
+
+app.get('/config', (req, res) => {
+  res.json({
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+  })
+})
+app.get('/get-checkout-session', async (req, res) => {
+  const { id: sessionId } = req.query;
+  const session = await stripe.checkout.sessions.retrieve(
+    sessionId, {
+    expand: ['payment_intent'],
   }
-});
+  )
+  res.json(session);
+})
 
-app.get("/", (req, res) => {
-  const path = resolve(process.env.STATIC_DIR + "/index.html");
-  res.sendFile(path);
-});
+app.get('/get-products', async (req, res) => {
+  const products = await stripe.products.list({
+    limit: 3,
+  })
+  res.json(products);
+})
 
-// Stripe requires the raw body to construct the event
-app.post(
-  "/webhook",
-  bodyParser.raw({ type: "application/json" }),
-  (req, res) => {
-    const sig = req.headers["stripe-signature"];
-
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-    } catch (err) {
-      // On error, log and return the error message
-      console.log(`❌ Error message: ${err.message}`);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    // Successfully constructed event
-    console.log("✅ Success:", event.id);
-
-    // Return a response to acknowledge receipt of the event
-    res.json({ received: true });
+app.post('/create-checkout-session', async (req, res) => {
+  // const {line_items} = req.body;
+  const domain = process.env.DOMAIN;
+  // install the stripe vscode extension
+  const adjustableQuantitySetting = {
+    enabled: true,
+    minimum: 0,
+    maximum: 5
   }
-);
 
-app.listen(4242, () => console.log(`Node server listening on port ${4242}!`));
+  const priceList = [process.env.PRICE1, process.env.PRICE2, process.env.PRICE3];
+
+  // https://stripe.com/docs/payments/checkout/custom-success-page
+  const session = await stripe.checkout.sessions.create({
+    success_url: `${domain}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${domain}/cancel`,
+    payment_method_types: ['card'],
+    line_items: priceList.map(priceId => ({ price: priceId, quantity: 1, adjustable_quantity: adjustableQuantitySetting })),
+    // [
+    //   { price: process.env.PRICE1, quantity: 1, adjustable_quantity: adjustable_quantity_setting },
+    //   { price: process.env.PRICE2, quantity: 1, adjustable_quantity: adjustable_quantity_setting },
+    //   { price: process.env.PRICE3, quantity: 1, adjustable_quantity: adjustable_quantity_setting },
+    // ],
+    mode: 'payment',
+  })
+  res.json({ id: session.id });
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})

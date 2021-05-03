@@ -31,8 +31,6 @@ function App() {
           <Route path='/cancel' exact>
             <Cancel />
           </Route>
-          {/* Make sure this goes last */}
-
         </Switch>
       </Router>
     </div>

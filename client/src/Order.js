@@ -12,7 +12,7 @@ const Order = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             const productsData = await fetch('/get-products').then(res => res.json());
-            setProducts(productsData.data);
+            setProducts(productsData);
         };
         fetchProducts();
     }, []);

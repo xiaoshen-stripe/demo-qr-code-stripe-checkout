@@ -2,6 +2,7 @@
 
 > [🎬 Watch on YouTube](TBD)
 
+[Deployed demo app](https://qr-code-checkout.stripedemos.com/)
 ## Requirements
 * Node + Express backend 
 * React frontend

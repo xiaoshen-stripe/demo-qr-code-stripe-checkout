@@ -1,14 +1,13 @@
-// 1. setup dotenv, and set up env file
 require('dotenv').config();
-// 2. setup Stripe
+const express = require('express');
+const app = express();
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const express = require('express')
-const app = express()
-// 3. setup middleware to handle incoming request objects as JSON https://stackoverflow.com/a/51844327
-// don't need since we are not passing in json request for POST calls
-// app.use(express.json())
-const port = 4242
+app.use(express.static('.'));
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/config', (req, res) => {
   res.json({
@@ -29,13 +28,15 @@ app.get('/get-products', async (req, res) => {
   const products = await stripe.products.list({
     limit: 3,
   })
-  res.json(products);
+  res.json(products.data);
 })
 
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+});
+
 app.post('/create-checkout-session', async (req, res) => {
-  // const {line_items} = req.body;
   const domain = process.env.DOMAIN;
-  // install the stripe vscode extension
   const adjustableQuantitySetting = {
     enabled: true,
     minimum: 0,
@@ -50,16 +51,11 @@ app.post('/create-checkout-session', async (req, res) => {
     cancel_url: `${domain}/cancel`,
     payment_method_types: ['card'],
     line_items: priceList.map(priceId => ({ price: priceId, quantity: 1, adjustable_quantity: adjustableQuantitySetting })),
-    // [
-    //   { price: process.env.PRICE1, quantity: 1, adjustable_quantity: adjustable_quantity_setting },
-    //   { price: process.env.PRICE2, quantity: 1, adjustable_quantity: adjustable_quantity_setting },
-    //   { price: process.env.PRICE3, quantity: 1, adjustable_quantity: adjustable_quantity_setting },
-    // ],
     mode: 'payment',
   })
   res.json({ id: session.id });
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(process.env.PORT, () => {
+  console.log(`Example app listening at http://localhost:${process.env.PORT}`)
 })

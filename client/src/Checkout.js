@@ -3,7 +3,7 @@
 // fetch config
 // Create stripe session 
 // redirect the user to the session  
-
+import React from 'react';
 import { useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -17,7 +17,7 @@ const Checkout = () => {
             const { id } = await fetch('/create-checkout-session', {
                 method: 'POST'
             }).then(res => res.json());
-            console.log("id is", id);
+
             const { error } = await stripe.redirectToCheckout({
                 sessionId: id
             });

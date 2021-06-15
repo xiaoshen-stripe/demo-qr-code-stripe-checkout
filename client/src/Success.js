@@ -1,3 +1,4 @@
+import React from 'react';
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from 'react';
 // 2. retrieve session data including the receipt url 

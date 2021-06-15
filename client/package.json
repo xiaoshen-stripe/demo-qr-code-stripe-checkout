@@ -2,7 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-
   "dependencies": {
     "@stripe/stripe-js": "^1.14.0",
     "qrcode.react": "^1.0.1",

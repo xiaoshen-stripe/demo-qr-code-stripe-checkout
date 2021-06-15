@@ -1,19 +1,16 @@
 import './App.css';
-// 1. import dependencies
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from 'react-router-dom';
-// 2. create components
+
 import Checkout from './Checkout';
 import Success from './Success';
 import Cancel from './Cancel';
 import Order from './Order';
 
-
-
-// Create routing
 function App() {
   return (
     <div className="App">

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import QRcode from 'qrcode.react';
 
@@ -5,9 +6,6 @@ const Order = () => {
 
     const [products, setProducts] = useState();
     const [qrcode, setQrcode] = useState(false);
-
-    // useEffects 
-    // 1. get products info (name, image)
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -17,13 +15,7 @@ const Order = () => {
         fetchProducts();
     }, []);
 
-    // 2.0 display products sold with conditional rendering 
-
-    // 3.0 render the buy button 
-
-
     const QrcodeDisplay = () => {
-
         const qrCodeDestination = `${window.location.origin}/checkout`;
 
         return (
@@ -58,8 +50,6 @@ const Order = () => {
         return (<p className="loading-msg">Loading...</p>);
     }
 
-    // create htmls 
-    // finalize rendering logic with loading function 
     return (
         qrcode ? <QrcodeDisplay /> :
             products ?

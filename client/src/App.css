@@ -10,6 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .order,
 .success,
 .cancel {
@@ -20,6 +21,7 @@ body {
   justify-content: space-between;
   min-width: 500px;
 }
+
 .product {
   display: flex;
   justify-content: space-between;
@@ -42,11 +44,13 @@ p {
   justify-content: center;
   box-sizing: border-box;
 }
+
 img {
   margin: 0.7em;
   width: 4em;
   height: 4em;
 }
+
 button {
   height: 2em;
   background: #556cd6;
@@ -65,7 +69,7 @@ button:hover {
   opacity: 0.8;
 }
 
-.success-msg {
+.success-msg, .cancel-msg {
   display: flex;
   padding: 1em;
   justify-content: center;

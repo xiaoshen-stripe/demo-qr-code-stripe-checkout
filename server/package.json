@@ -1,16 +1,17 @@
 {
-  "name": "qr-code-checkout-demo",
+  "name": "server",
   "version": "1.0.0",
-  "description": "contactless payment with Stripe Checkout",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "xiaoshen-stripe",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "stripe": "^8.145.0"
+    "stripe": "^8.154.0"
   }
 }

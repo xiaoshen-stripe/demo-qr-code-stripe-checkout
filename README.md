@@ -1,6 +1,6 @@
 # Stripe Developer Office Hours - Checkout with QR code
 
-> [🎬 Watch on YouTube](TBD)
+> [🎬 Watch on YouTube](https://www.youtube.com/watch?v=I27HwkL1_Vs)
 
 [Deployed demo app](https://qr-code-checkout.stripedemos.com/)
 ## Requirements
